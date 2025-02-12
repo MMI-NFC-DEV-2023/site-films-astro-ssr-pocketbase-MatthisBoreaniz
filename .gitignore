@@ -25,4 +25,4 @@ pnpm-debug.log*
 
 #pocketbase 
 /pocketbase/*
-!not/pocketbase/pb_migrations
+!/pocketbase/pb_migrations
