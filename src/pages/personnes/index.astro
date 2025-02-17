@@ -1,6 +1,7 @@
 ---
 import { Debug } from "astro:components";
 import { pb } from "../../backend";
+import Layout from "../../layouts/Layout.astro";
 export const prerender = false
 const listPersonnes = await pb.collection("personnes").getFullList();
 
@@ -9,4 +10,6 @@ const listPersonnes = await pb.collection("personnes").getFullList();
     {JSON.stringify(listPersonnes, null, 2)}
 </pre> -->
 
-<Debug {listPersonnes} />
+<Layout pageTitle="Liste des personnes">
+    <Debug {listPersonnes} />
+</Layout>
