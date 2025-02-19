@@ -4,12 +4,13 @@ import Layout from "../../layouts/Layout.astro";
 import type { FilmsResponse, PersonnesResponse, RolesResponse } from "../../pocketbase-typegen";
 export const prerender = false
 type Response = FilmsResponse<{
-    producteur: PersonnesResponse;
-    scenaristes: PersonnesResponse[];
-    role: RolesResponse<{acteur: PersonnesResponse}>[];
+    producteur?: PersonnesResponse;
+    scenaristes?: PersonnesResponse[];
+    role?: RolesResponse<{acteur: PersonnesResponse}>[];
 }>;
 
-const listFilms = await Astro.locals.pb.collection<Response>("films").getFullList({expand:"producteur, scenaristes, role.acteur"});
+const listFilms = await Astro.locals.pb.collection<Response>("films")
+    .getFullList({expand:"producteur, scenaristes, role.acteur"});
 
 ---
 <!-- <pre>
@@ -20,11 +21,14 @@ const listFilms = await Astro.locals.pb.collection<Response>("films").getFullLis
     {listFilms.map(film => <div>
         <h2>Film : {film.titre}</h2>
         <p>Année de sortie : {film.dateSortie}</p>
-        <p>Producteur : {film.expand?.producteur.nom}</p>
-        <p>Scénaristes : {film.expand?.scenaristes.map(s => (<span>{s.nom + ", "}</span>))}</p>
+        {  film.expand?.producteur &&      <p>Producteur : {film.expand?.producteur.nom}</p>}        
+        {film.expand?.scenaristes && <p>Scénaristes : {film.expand?.scenaristes.map(s => (<span>{s.nom + ", "}</span>))}</p>}
         <p>Durée : {film.duree} minutes</p>
-        <p>Les roles : {film.expand?.role.map(r => <span>Nom du role : {r.nomRole + ", "}</span> <span>Joué par : {r.expand?.acteur.nom +", "}</span>)}</p>
-
+        { film.expand?.role &&  <p>Les roles : 
+            {film.expand?.role.map(r => 
+            <span>Nom du role : {r.nomRole + ", "}</span> 
+            <span>Joué par : {r.expand?.acteur.nom +", "}</span>)}</p>
+        }
     </div>)}
     <Debug {listFilms} />
 </Layout>
