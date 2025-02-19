@@ -7,6 +7,7 @@ import type {
   RolesResponse,
 } from "../../pocketbase-typegen";
 import LinkFilm from "../../components/LinkFilm.astro";
+import LinkPersonne from "../../components/LinkPersonne.astro";
 export const prerender = false;
 const id = Astro.params.id;
 const personne = await Astro.locals.pb
@@ -48,7 +49,7 @@ const personne = await Astro.locals.pb
         <p>
           Les films où il est producteur :{" "}
           {personne.expand?.films_via_producteur.map((f) => (
-            <span>{f.titre + ", "}</span>
+            <LinkFilm {...f} />
           ))}
         </p>
       )
@@ -58,7 +59,7 @@ const personne = await Astro.locals.pb
         <p>
           Les films où il est scenariste :{" "}
           {personne.expand?.films_via_scenaristes.map((f) => (
-            <span>{f.titre + ", "}</span>
+            <LinkFilm {...f} />
           ))}
         </p>
       )
