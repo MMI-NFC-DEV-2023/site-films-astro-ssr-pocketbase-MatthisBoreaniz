@@ -1,10 +1,12 @@
 ---
+import { Debug } from "astro:components";
 import Layout from "../../layouts/Layout.astro";
 import type {
   FilmsResponse,
   PersonnesResponse,
   RolesResponse,
 } from "../../pocketbase-typegen";
+import LinkFilm from "../../components/LinkFilm.astro";
 export const prerender = false;
 const id = Astro.params.id;
 const personne = await Astro.locals.pb
@@ -12,44 +14,54 @@ const personne = await Astro.locals.pb
     PersonnesResponse<{
       films_via_producteur?: FilmsResponse[];
       films_via_scenaristes?: FilmsResponse[];
-      roles_via_acteur?: RolesResponse[];
+      roles_via_acteur?: RolesResponse<{ films_via_role: FilmsResponse[] }>[];
     }>
   >("personnes")
-  .getOne(id!,{
-    expand: "films_via_producteur, films_via_scenaristes, roles_via_acteur",
+  .getOne(id!, {
+    expand:
+      "films_via_producteur, films_via_scenaristes, roles_via_acteur.films_via_role",
   });
 ---
 
 <Layout pageTitle="Liste des personnes">
- 
-      <div>
-        <h2>Personne : {personne.nom}</h2>
+  <div>
+    <h2>Personne : {personne.nom}</h2>
 
-        {personne.expand?.roles_via_acteur && (
-          <p>
-            Les roles : :{" "}
-            {personne.expand?.roles_via_acteur.map((f) => (
-              <span>{f.nomRole + ", " + "Joué par :"  + personne.nom + ", "}</span>
-            ))}
-          </p>
-        )}
+    {
+      personne.expand?.roles_via_acteur && (
+        <p>
+          Rôles joués : {""}
+          {personne.expand?.roles_via_acteur?.map((f) => (
+            <>
+              <span>{f.nomRole + " joué dans : "}</span>
+              {f.expand?.films_via_role && (
+                <LinkFilm {...f.expand.films_via_role[0]} />
+              )}
+            </>
+          ))}
+        </p>
+      )
+    }
 
-        {personne.expand?.films_via_producteur && (
-          <p>
-            Les films où il est producteur :{" "}
-            {personne.expand?.films_via_producteur.map((f) => (
-              <span>{f.titre + ", "}</span>
-            ))}
-          </p>
-        )}
-        {personne.expand?.films_via_scenaristes && (
-          <p>
-            Les films où il est scenariste :{" "}
-            {personne.expand?.films_via_scenaristes.map((f) => (
-              <span>{f.titre + ", "}</span>
-            ))}
-          </p>
-        )}
-      </div>
-
+    {
+      personne.expand?.films_via_producteur && (
+        <p>
+          Les films où il est producteur :{" "}
+          {personne.expand?.films_via_producteur.map((f) => (
+            <span>{f.titre + ", "}</span>
+          ))}
+        </p>
+      )
+    }
+    {
+      personne.expand?.films_via_scenaristes && (
+        <p>
+          Les films où il est scenariste :{" "}
+          {personne.expand?.films_via_scenaristes.map((f) => (
+            <span>{f.titre + ", "}</span>
+          ))}
+        </p>
+      )
+    }
+  </div>
 </Layout>

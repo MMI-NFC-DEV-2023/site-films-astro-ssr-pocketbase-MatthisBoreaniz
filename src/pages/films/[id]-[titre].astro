@@ -1,4 +1,6 @@
 ---
+import LinkPersonne from "../../components/LinkPersonne.astro";
+import Layout from "../../layouts/Layout.astro";
 import type {
   FilmsResponse,
   PersonnesResponse,
@@ -21,15 +23,17 @@ const film = await Astro.locals.pb
 ---
 
 <!-- Affichage d'un seul film -->
-<div>
-        <h2>Film : {film.titre}</h2>
-        <p>Année de sortie : {film.dateSortie}</p>
-        {  film.expand?.producteur &&      <p>Producteur : {film.expand?.producteur.nom}</p>}        
-        {film.expand?.scenaristes && <p>Scénaristes : {film.expand?.scenaristes.map(s => (<span>{s.nom + ", "}</span>))}</p>}
-        <p>Durée : {film.duree} minutes</p>
-        { film.expand?.role &&  <p>Les roles : 
-            {film.expand?.role.map(r => 
-            <span>Nom du role : {r.nomRole + ", "}</span> 
-            <span>Joué par : {r.expand?.acteur.nom +", "}</span>)}</p>
-        }
-</div>
+<Layout pageTitle={`film : ${film.titre}`}>
+  <div>
+          <h2>Film : {film.titre}</h2>
+          <p>Année de sortie : {film.dateSortie}</p>
+          {  film.expand?.producteur &&      <p>Producteur : <LinkPersonne {...film.expand?.producteur!}/></p>}
+          {film.expand?.scenaristes && <p>Scénaristes : {film.expand?.scenaristes.map(s => (<LinkPersonne {...s}/>))}</p>}
+          <p>Durée : {film.duree} minutes</p>
+          { film.expand?.role &&  <p>Les roles :
+              {film.expand?.role.map(r =>
+              <span>Nom du role : {r.nomRole + ", "}</span>
+              <span>Joué par : <LinkPersonne {...r.expand?.acteur!} /> </span>)}</p>
+          }
+  </div>
+</Layout>
