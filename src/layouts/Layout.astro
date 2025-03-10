@@ -8,7 +8,7 @@ const {pageTitle} = Astro.props;
 
 
 <!doctype html>
-<html lang="en">
+<html lang="en" x-data="{menuOpen: false}">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -16,11 +16,13 @@ const {pageTitle} = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{pageTitle}</title>
 	</head>
-	<nav>
-		<a href="/">Accueil</a>
-		<a href="/personnes">Liste des personnes</a>
-		<a href="/authPassword">Se connecter</a>
-		<a href="/films">Liste des films</a>
+	<button aria-controls="navigation" :aria-expanded="menuOpen" @click="menuOpen = !menuOpen">Menu</button>
+	<nav :aria-hidden="!menuOpen" class="transform transition-transform " :class="{'translate-x-full' : !menuOpen}" id="navigation" >
+		<a href="/" class="nav-link text-blue-500 hover:text-blue-700">Accueil</a>
+		<a href="/personnes" class="nav-link text-blue-500 hover:text-blue-700">Liste des personnes</a>
+		<a href="/authPassword" class="nav-link text-blue-500 hover:text-blue-700">Se connecter</a>
+		<a href="/auth-github" class="nav-link text-blue-500 hover:text-blue-700">Se connecter avec Github</a>
+		<a href="/films" class="nav-link text-blue-500 hover:text-blue-700">Liste des films</a>
 	</nav>
 	<body>
 		<slot />

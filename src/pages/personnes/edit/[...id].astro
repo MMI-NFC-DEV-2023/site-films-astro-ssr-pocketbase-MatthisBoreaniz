@@ -1,0 +1,67 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { PersonnesNationaliteOptions } from "../../../pocketbase-typegen";
+import { PersonnesProfessionOptions } from "../../../pocketbase-typegen";
+
+export const prerender = false;
+
+const pb = Astro.locals.pb;
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+  const personne = await pb.collection("personnes").create(data);
+  return Astro.redirect(`/personnes/${personne.id}-${personne.nom}`);
+}
+---
+
+<Layout pageTitle="edit personne">
+  <h1>Edit de Personne</h1>
+  <form class="*:contents grid grid-cols-2" method="post">
+    <label>
+      date de deces
+      <input type="date" name="dateDeces" />
+    </label>
+    <label>
+      date de Naissance
+      <input type="date" name="dateNaissance" />
+    </label>
+    <label>
+      Lieu de décès
+      <input type="text" name="lieuDeces" />
+    </label>
+    <label>
+      Lieu de Naissance
+      <input type="text" name="lieuNaissance" />
+    </label>
+    <label>
+      Nom
+      <input type="text" name="nom" />
+    </label>
+    <label>
+      Prenom
+      <input type="text" name="prenom" />
+    </label>
+
+    <label>
+      nationalite
+      <select name="nationalite">
+        {
+          Object.entries(PersonnesNationaliteOptions    ).map(([key, value]) => (
+            <option value={key}>{value}</option>
+          ))
+        }
+      </select>
+    </label>
+
+    <label>
+      Profession
+      <select name="profession" multiple>
+        {
+          Object.entries(PersonnesProfessionOptions).map(([key, value]) => (
+            <option value={key}>{value}</option>
+          ))
+        }
+      </select>
+      <button>Envoyer</button>
+    </label>
+  </form>
+</Layout>

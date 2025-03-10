@@ -8,6 +8,14 @@ const listFilms = await Astro.locals.pb.collection("films").getFullList();
 ---
 
 <Layout pageTitle="Liste des personnes">
-  {listFilms.map((film) => <LinkFilm {...film} />)}
+  <ul>
+    {
+      listFilms.map((film) => (
+        <li>
+          <LinkFilm {...film} />
+        </li>
+      ))
+    }
+  </ul>
   <!-- <Debug {listFilms} /> -->
 </Layout>

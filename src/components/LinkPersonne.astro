@@ -8,5 +8,5 @@ type Props = PersonnesResponse;
 const personne = Astro.props
 ---
 <a href={`/personnes/${personne.id}-${slugger.slug(personne.nom)}`}
-  >{personne.prenom + " " + personne.nom}</a
+ class="lien" >{personne.prenom + " " + personne.nom}</a
 >
