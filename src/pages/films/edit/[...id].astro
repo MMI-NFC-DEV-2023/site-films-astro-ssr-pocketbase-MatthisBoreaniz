@@ -41,7 +41,10 @@ const personnes = await pb.collection("personnes").getFullList();
 ---
 
 <Layout pageTitle="Edit de film">
+  {message && <p class="text-red-500">Erreur : {message}</p>}
+
   <form class="*:contents grid grid-cols-2" method="POST">
+    <input type="hidden" name="id" value={film.id} />
     <label>
       Titre
       <input required type="text" name="titre" value={film.titre} />
@@ -85,7 +88,12 @@ const personnes = await pb.collection("personnes").getFullList();
         {
           personnes.map((personne) => (
             <label>
-              <input checked={film.scenaristes.includes(personne.id)} type="checkbox" name="scenaristes" value={personne.id} />
+              <input
+                checked={film.scenaristes.includes(personne.id)}
+                type="checkbox"
+                name="scenaristes"
+                value={personne.id}
+              />
               {personne.nom}
             </label>
           ))
