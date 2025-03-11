@@ -8,6 +8,7 @@ import {
 import { PersonnesProfessionOptions } from "../../../pocketbase-typegen";
 import GithubSlugger from "github-slugger";
 import type { ClientResponseError } from "pocketbase";
+import { formatDate } from "../../../utilitaires";
 
 const slugger = new GithubSlugger();
 
@@ -47,9 +48,7 @@ if (Astro.request.method === "POST") {
   }
 }
 
-function formatDate(date: string) {
-  return date ? new Date(date).toISOString().split("T")[0] : "";
-}
+
 ---
 
 <Layout pageTitle="edit personne">
