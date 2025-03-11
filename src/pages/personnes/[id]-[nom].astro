@@ -10,24 +10,31 @@ import LinkFilm from "../../components/LinkFilm.astro";
 import LinkPersonne from "../../components/LinkPersonne.astro";
 export const prerender = false;
 const id = Astro.params.id;
+type PersonneExpand = PersonnesResponse<{
+  films_via_producteur?: FilmsResponse[];
+  films_via_scenaristes?: FilmsResponse[];
+  roles_via_acteur?: RolesResponse<{ films_via_role: FilmsResponse[] }>[];
+}>;
 const personne = await Astro.locals.pb
-  .collection<
-    PersonnesResponse<{
-      films_via_producteur?: FilmsResponse[];
-      films_via_scenaristes?: FilmsResponse[];
-      roles_via_acteur?: RolesResponse<{ films_via_role: FilmsResponse[] }>[];
-    }>
-  >("personnes")
+  .collection<PersonneExpand>("personnes")
   .getOne(id!, {
     expand:
       "films_via_producteur, films_via_scenaristes, roles_via_acteur.films_via_role",
+  })
+  .catch((error) => {
+    console.error("erreur à la recup de la personne", id, error);
+    return {} as PersonneExpand;
   });
 ---
 
 <Layout pageTitle="Liste des personnes">
   <div>
     <h2>Personne : {personne.nom}</h2>
-   {Astro.locals.pb.authStore.isValid && <a href={`/personnes/edit/${personne.id}`}>Edit</a>}
+    {
+      Astro.locals.pb.authStore.isValid && (
+        <a href={`/personnes/edit/${personne.id}`}>Edit</a>
+      )
+    }
 
     {
       personne.expand?.roles_via_acteur && (
