@@ -68,6 +68,7 @@ const personnes = await pb.collection("personnes").getFullList();
     <label>
       Producteur
       <select name="producteur">
+        <option value="">Ajouter un producteur </option>
         <!-- <option value="720527e4grhrr5w">Harry Potter</option>
         <option value="q00u4xevq1fz05l">Leonardo Di Caprio</option> -->
         {
@@ -89,7 +90,7 @@ const personnes = await pb.collection("personnes").getFullList();
           personnes.map((personne) => (
             <label>
               <input
-                checked={film.scenaristes.includes(personne.id)}
+                checked={film.scenaristes?.includes(personne.id)}
                 type="checkbox"
                 name="scenaristes"
                 value={personne.id}
